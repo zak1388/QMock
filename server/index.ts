@@ -3,7 +3,14 @@ import { completion } from "zod-gpt"
 import z from "zod"
 import express from 'express'
 
+import { ExtendedTopicSchema, ExtendedTopic, TopicSchema, Topic } from "../shared/validators/TopicValidator"
+import { TrueFalseSchema, TrueFalseQuestion } from "../shared/validators/questions/TrueFalseValidator"
+import { MultipleChoiceSchema, MultipleChoiceQuestion } from "../shared/validators/questions/MultipleChoiceValidator"
+import { MatchingPairsSchema, MatchingPairsQuestion } from "../shared/validators/questions/MatchingPairsValidator"
+import { Text, TextSchema } from "../shared/validators/TextValidator"
+
 import dotenv from 'dotenv'
+import { QuestionType } from "../shared/validators/QuestionTypeValidator"
 dotenv.config()
 
 const app = express()
@@ -11,10 +18,6 @@ app.use(express.json())
 
 app.post('/api/topics', async (req, res) => {
     try {
-        const TextSchema = z.object({
-            text: z.string().min(1).max(10000)
-        })
-        type Text = z.infer<typeof TextSchema>
         const text: Text = TextSchema.parse(req.body)
         const topics = await getTopics(openai, text.text)
         return res.status(200).json(topics)
@@ -29,15 +32,8 @@ app.post('/api/topics', async (req, res) => {
 
 app.post('/api/questions', async (req, res) => {
     try {
-        const TopicSchema = z.object({
-            topic: z.string().min(1).max(100),
-            summary: z.string().default(""),
-            quantity: z.number().int().min(1).max(10).default(1),
-            type: z.enum(["multiple choice", "true/false", "matching"]).optional()
-        })
-        const TopicsSchema = z.array(TopicSchema).max(20)
-        type Topics = z.infer<typeof TopicsSchema>
-        const topics: Topics = TopicsSchema.parse(req.body)
+        const TopicsSchema = z.array(ExtendedTopicSchema).max(20)
+        const topics: ExtendedTopic[] = TopicsSchema.parse(req.body)
         res.setHeader('Content-Type', 'text/event-stream')
         res.setHeader('Cache-Control', 'no-cache')
         res.setHeader('Connection', 'keep-alive')
@@ -65,7 +61,7 @@ app.post('/api/questions', async (req, res) => {
 
 app.listen(3000, () => console.log('Server running on port 3000...'))
 
-async function getTopics(openai: OpenAIChatApi, text: string) {
+async function getTopics(openai: OpenAIChatApi, text: string): Promise<Topic[]> {
     return (await completion(openai, `"""${text}"""
 
     Produce a list of all the topics covered in the above university module, summarizing each topic in a minimum of 2-3 sentences.
@@ -73,15 +69,12 @@ async function getTopics(openai: OpenAIChatApi, text: string) {
     Please note that the above text was taken from a past exam paper and is not exhaustive; therefore, you SHOULD generate a list of topics that is not limited to the above text.
     `, {
         schema: z.object({
-            topics: z.array(z.object({
-                topic: z.string().describe("The name of a topic the module covers"),
-                summary: z.string().describe("A short summary of the topic in 2-3 sentences"),
-            })).describe("A list of topics covered in the module"),
+            topics: z.array(TopicSchema).describe("A list of topics covered in the module"),
         })
     })).data.topics
 }``
 
-async function getTrueFalseQuestions(openai: OpenAIChatApi, topic: {topic: string, summary: string}, quantity: number) {
+async function getTrueFalseQuestions(openai: OpenAIChatApi, topic: Topic, quantity: number): Promise<TrueFalseQuestion[]> {
     return (await completion(openai, `"""${JSON.stringify(topic)}"""
    
     Generate ${quantity} university-level, hard true/false questions for the topic provided above.
@@ -89,15 +82,12 @@ async function getTrueFalseQuestions(openai: OpenAIChatApi, topic: {topic: strin
     ${[...Array(quantity)].map((_, i) => `For question ${i + 1}, you must provide both a TRUE and a FALSE variation of a statement.`).join("\n")}
     `, {
         schema: z.object({
-            questions: z.array(z.object({
-                trueStatement: z.string().describe("The true statement to be asked to the student in the form of multiple sentences or paragraphs"),
-                falseStatement: z.string().describe("A false or twisted version of the true statement"),
-            })).describe("A list of true/false questions for the topic"),
+            questions: z.array(TrueFalseSchema).describe("A list of true/false questions for the topic"),
         })
     })).data.questions
 }
 
-async function getMultipleChoiceQuestions(openai: OpenAIChatApi, topic: {topic: string, summary: string}, quantity: number) {
+async function getMultipleChoiceQuestions(openai: OpenAIChatApi, topic: Topic, quantity: number): Promise<MultipleChoiceQuestion[]> {
     return (await completion(openai, `"""${JSON.stringify(topic)}"""
     
     Generate ${quantity} university-level, hard multiple-choice questions for the topic provided above.
@@ -105,18 +95,12 @@ async function getMultipleChoiceQuestions(openai: OpenAIChatApi, topic: {topic: 
     ${[...Array(quantity)].map((_, i) => `For question ${i + 1}, you must provide 1 correct answer and 3 incorrect answers.`).join("\n")}
     `, {
         schema: z.object({
-            questions: z.array(z.object({
-                question: z.string().describe("The question to be asked to the student in the form of multiple sentences or paragraphs"),
-                correctAnswer: z.string().describe("The correct answer to the question"),
-                incorrectAnswer1: z.string().describe("An incorrect answer to the question"),
-                incorrectAnswer2: z.string().describe("An incorrect answer to the question"),
-                incorrectAnswer3: z.string().describe("An incorrect answer to the question")
-            })).describe("A list of multiple-choice questions for the topic"),
+            questions: z.array(MultipleChoiceSchema).describe("A list of multiple-choice questions for the topic"),
         })
     })).data.questions
 }
 
-async function getMatchingColumnsQuestions(openai: OpenAIChatApi, topic: {topic: string, summary: string}, quantity: number) {
+async function getMatchingColumnsQuestions(openai: OpenAIChatApi, topic: Topic, quantity: number): Promise<MatchingPairsQuestion[]> {
     return (await completion(openai, `"""${JSON.stringify(topic)}"""
     
     Generate ${quantity} university-level, hard matching columns questions for the topic provided above.
@@ -142,19 +126,12 @@ async function getMatchingColumnsQuestions(openai: OpenAIChatApi, topic: {topic:
     })}"""
     `, {
         schema: z.object({
-            questions: z.array(z.object({
-                prompt: z.string().describe("The prompt to be asked to the student describing how to match the columns"),
-                context: z.string().describe("The context of the question, i.e., any database tables or functions that are required to answer the question"),
-                pairs: z.array(z.object({
-                    left: z.string().describe("The left column of the matching columns question"),
-                    right: z.string().describe("The right column of the matching columns question")
-                })).describe("A list of matching columns questions for the topic")
-            })).describe("A list of matching columns questions for the topic")
+            questions: z.array(MatchingPairsSchema).describe("A list of matching columns questions for the topic")
         })
     })).data.questions
 }
 
-async function getQuestions(openai: OpenAIChatApi, topic: {topic: string, summary: string}, quantity: number, type?: "multiple choice" | "true/false" | "matching") {
+async function getQuestions(openai: OpenAIChatApi, topic: Topic, quantity: number, type?: QuestionType) {
     switch (type) {
         case "multiple choice":
             return await getMultipleChoiceQuestions(openai, topic, quantity);
@@ -175,7 +152,7 @@ async function getQuestions(openai: OpenAIChatApi, topic: {topic: string, summar
 
             return Promise.allSettled(promises).then(results => {
                 const fulfilled = results.filter(p => p.status === "fulfilled");
-                return fulfilled.map(p => (p as PromiseFulfilledResult<any>).value).flat();
+                return fulfilled.map(p => (p as PromiseFulfilledResult<(MultipleChoiceQuestion | TrueFalseQuestion | MatchingPairsQuestion)[]>).value).flat();
             })
     }
 }
