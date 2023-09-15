@@ -1,32 +1,26 @@
 import TrueFalse from "./components/TrueFalse"
-import MatchingPairs from "./components/MatchingPairs"
+import MultipleChoice from "./components/MultipleChoice"
 
 function App() {
     return (
-        <>
-            <MatchingPairs question={{
-            "prompt": "Match the decimal numbers with their binary representations:",
-            "context": "Digital Representation of Data",
-            "pairs": [
-                {
-                    "left": "10",
-                    "right": "1010"
-                },
-                {
-                    "left": "7",
-                    "right": "111"
-                },
-                {
-                    "left": "13",
-                    "right": "1101"
-                },
-                {
-                    "left": "27",
-                    "right": "11011"
-                }
-            ]
-        }} questionNumber={1} numberOfQuestions={4} />
-        </>
+        <div className="flex flex-col gap-8 m-8">
+            <TrueFalse question={{
+                "trueStatement": "Converting a decimal number to binary always results in a unique binary representation.",
+                "falseStatement": "Multiple decimal numbers can have the same binary representation."
+            }} questionNumber={1} numberOfQuestions={2} onSubmit={(correct: boolean) => {
+                console.log(correct)
+            }} />
+
+            <MultipleChoice question={{
+                "question": "What is the binary representation of 5?",
+                "correctAnswer": "101",
+                "incorrectAnswer1": "100",
+                "incorrectAnswer2": "111",
+                "incorrectAnswer3": "110"
+            }} questionNumber={2} numberOfQuestions={2} onSubmit={(correct: boolean) => {
+                console.log(correct)
+            }} />
+        </div>
     )
 }
 

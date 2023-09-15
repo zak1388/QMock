@@ -1,10 +1,11 @@
 import { MatchingPairsQuestion } from "../../../shared/validators/questions/MatchingPairsValidator";
 import { useState } from "react";
 
-export default function MatchingPairs({ question, questionNumber, numberOfQuestions }: {
+export default function MatchingPairs({ question, questionNumber, numberOfQuestions, onSubmit }: {
     question: MatchingPairsQuestion,
     questionNumber: number,
-    numberOfQuestions: number
+    numberOfQuestions: number,
+    onSubmit: (correct: boolean) => void
 }) {
 
     const [columns, setColumns] = useState<{
