@@ -10,7 +10,7 @@ import { MatchingPairsSchema, MatchingPairsQuestion } from "../shared/validators
 import { Text, TextSchema } from "../shared/validators/TextValidator"
 
 import dotenv from 'dotenv'
-import { QuestionType } from "../shared/validators/QuestionTypeValidator"
+import { QuestionType, QuestionEnum } from "../shared/validators/QuestionTypeValidator"
 dotenv.config()
 
 const app = express()
@@ -131,7 +131,7 @@ async function getMatchingColumnsQuestions(openai: OpenAIChatApi, topic: Topic, 
     })).data.questions
 }
 
-async function getQuestions(openai: OpenAIChatApi, topic: Topic, quantity: number, type?: QuestionType) {
+async function getQuestions(openai: OpenAIChatApi, topic: Topic, quantity: number, type?: QuestionEnum) {
     switch (type) {
         case "multiple choice":
             return await getMultipleChoiceQuestions(openai, topic, quantity);
@@ -152,7 +152,7 @@ async function getQuestions(openai: OpenAIChatApi, topic: Topic, quantity: numbe
 
             return Promise.allSettled(promises).then(results => {
                 const fulfilled = results.filter(p => p.status === "fulfilled");
-                return fulfilled.map(p => (p as PromiseFulfilledResult<(MultipleChoiceQuestion | TrueFalseQuestion | MatchingPairsQuestion)[]>).value).flat();
+                return fulfilled.map(p => (p as PromiseFulfilledResult<QuestionType[]>).value).flat();
             })
     }
 }

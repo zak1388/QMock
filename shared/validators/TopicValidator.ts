@@ -1,5 +1,5 @@
 import z from "zod";
-import { QuestionTypeSchema } from "./QuestionTypeValidator";
+import { QuestionEnumSchema } from "./QuestionTypeValidator";
 
 const TopicSchema = z.object({
     topic: z.string().min(1).max(100).describe("The name of a topic the module covers"),
@@ -8,7 +8,7 @@ const TopicSchema = z.object({
 
 const ExtendedTopicSchema = TopicSchema.extend({
     quantity: z.number().int().min(1).max(10).default(1),
-    type: QuestionTypeSchema
+    type: QuestionEnumSchema
 })
 
 type Topic = z.infer<typeof TopicSchema>;
