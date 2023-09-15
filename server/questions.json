@@ -1,0 +1,31 @@
+{
+  "question": "What are the different types of database systems?",
+  "subquestions": [
+    {
+      "question": "What is a relational database system?",
+      "subquestions": [
+        {
+          "question": "What are the advantages of using a relational database system?",
+          "answer": "Relational database systems provide structured and organized storage of data, they ensure data integrity, support efficient querying and allow for data consistency and scalability."
+        },
+        {
+          "question": "What are the disadvantages of using a relational database system?",
+          "answer": "Relational database systems can be complex to design and manage, they have performance limitations for certain types of queries, and they can be difficult to scale horizontally."
+        }
+      ]
+    },
+    {
+      "question": "What is a NoSQL database system?",
+      "subquestions": [
+        {
+          "question": "What are the advantages of using a NoSQL database system?",
+          "answer": "NoSQL database systems provide flexible schema, high scalability and performance, and can handle large amounts of unstructured data."
+        },
+        {
+          "question": "What are the disadvantages of using a NoSQL database system?",
+          "answer": "NoSQL database systems may sacrifice data consistency, lack support for complex queries, and may require more effort for data modeling and application development."
+        }
+      ]
+    }
+  ]
+}
