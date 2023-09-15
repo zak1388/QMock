@@ -1,12 +1,31 @@
 import TrueFalse from "./components/TrueFalse"
+import MatchingPairs from "./components/MatchingPairs"
 
 function App() {
     return (
         <>
-            <TrueFalse question={{
-                trueStatement: "The binary number 1011 is equal to the decimal number 11.",
-                falseStatement: "The binary number 1011 is equal to the decimal number 10."
-            }} questionNumber={2} numberOfQuestions={4} />
+            <MatchingPairs question={{
+            "prompt": "Match the decimal numbers with their binary representations:",
+            "context": "Digital Representation of Data",
+            "pairs": [
+                {
+                    "left": "10",
+                    "right": "1010"
+                },
+                {
+                    "left": "7",
+                    "right": "111"
+                },
+                {
+                    "left": "13",
+                    "right": "1101"
+                },
+                {
+                    "left": "27",
+                    "right": "11011"
+                }
+            ]
+        }} questionNumber={1} numberOfQuestions={4} />
         </>
     )
 }
