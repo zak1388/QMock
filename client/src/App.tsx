@@ -1,14 +1,13 @@
-import MultipleChoice from "./components/MultipleChoice"
+import TrueFalse from "./components/TrueFalse"
 
 function App() {
     return (
-        <MultipleChoice question={{
-            "question": "What is the binary representation of the decimal number 12?",
-            "correctAnswer": "1100",
-            "incorrectAnswer1": "1001",
-            "incorrectAnswer2": "1010",
-            "incorrectAnswer3": "1111"
-        }} questionNumber={1} numberOfQuestions={4} />
+        <>
+            <TrueFalse question={{
+                trueStatement: "The binary number 1011 is equal to the decimal number 11.",
+                falseStatement: "The binary number 1011 is equal to the decimal number 10."
+            }} questionNumber={2} numberOfQuestions={4} />
+        </>
     )
 }
 
