@@ -103,9 +103,9 @@ async function getMultipleChoiceQuestions(openai: OpenAIChatApi, topic: Topic, q
 async function getMatchingColumnsQuestions(openai: OpenAIChatApi, topic: Topic, quantity: number): Promise<MatchingPairsQuestion[]> {
     return (await completion(openai, `"""${JSON.stringify(topic)}"""
     
-    Generate ${quantity} university-level, hard matching columns questions for the topic provided above.
-    ${[...Array(quantity)].map((_, i) => `For question ${i + 1}, you must provide a list of 4 matching pairs.`)}
-    
+    Generate ${quantity} university-level, hard matching-pairs questions for the topic provided above.
+    ${[...Array(quantity)].map((_, i) => `For question ${i + 1}, you must provide a list of 4 matching-pairs.`)}
+
     Example 1: """${JSON.stringify({
   "question": "Match the programming languages with their paradigms:",
   "pairs": [
@@ -115,6 +115,7 @@ async function getMatchingColumnsQuestions(openai: OpenAIChatApi, topic: Topic, 
     { "left": "SQL", "right": "Query Language" }
   ]
 })}"""
+
     Example 2: """${JSON.stringify({
     "question": "Match the words with their definitions:",
     "pairs": [
@@ -122,6 +123,16 @@ async function getMatchingColumnsQuestions(openai: OpenAIChatApi, topic: Topic, 
         { "left": "Normalisation", "right": "The process of eliminating data redundancy and optimising data in a database" },
         { "left": "SQL", "right": "A query language used to retrieve data from a database" },
         { "left": "Data", "right": "A collection of facts or information" }
+    ]
+    })}"""
+
+    Example 3: """${JSON.stringify({
+    "question": "Match the programming terms with their definitions:",
+    "pairs": [
+        { "left": "Algorithm", "right": "A step-by-step procedure to solve a specific problem or perform a task in programming" },
+        { "left": "Syntax", "right": "The set of rules that dictate how programs in a particular language are written" },
+        { "left": "Variable", "right": "A named storage location in a program that holds data or values" },
+        { "left": "Function", "right": "A reusable block of code that performs a specific task" }
     ]
     })}"""
     `, {

@@ -22,7 +22,7 @@ export default function MultipleChoice({ question, questionNumber, numberOfQuest
     return (
         <div className="flex flex-col items-center gap-4">
             <div className="w-fit flex flex-col gap-4">
-                <div className="border-slate-700 flex flex-row items-center gap-8 justify-between border rounded-xl p-4 text-xl font-bold w-fit">
+                <div className="border-slate-700 flex flex-row items-center gap-8 border rounded-xl p-4 text-xl font-bold">
                     <div className="divide-y text-2xl font-black">
                         <p className="text-slate-200">{questionNumber}</p>
                         <p className="text-slate-500 font-bold">{numberOfQuestions}</p>
