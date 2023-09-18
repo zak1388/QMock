@@ -42,11 +42,11 @@ function App() {
 
     return (
         <>
-            <div className="flex flex-row gap-8 m-8">
+            <div className="flex flex-row gap-8 m-8 mt-0 pt-8">
                 <button onClick={() => getQuestionsByTopic({ topic: "Test Topic", summary: "test topic", quantity: 5 })}>Get Questions</button>
                 <button onClick={() => setQuestions([])}>Clear Questions</button>
             </div>
-            <div className="flex flex-col gap-8 m-8 items-start">
+            <div className="flex flex-col flex-align-center gap-8 m-8 items-start">
                 {questions.map((question, index) => {
                     if ('trueStatement' in question) {
                         return <TrueFalse question={question as TrueFalseQuestion} questionNumber={index + 1} numberOfQuestions={questions.length} onSubmit={(correct: boolean) => {

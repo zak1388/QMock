@@ -73,20 +73,20 @@ export default function MatchingPairs({ question, questionNumber, numberOfQuesti
 
     return (
         <div className="w-fit flex flex-col gap-4">
-            <div className="border-slate-700 flex flex-row items-center gap-8 border rounded-xl p-4 text-xl font-bold">
-                <div className="divide-y text-2xl font-black">
-                    <p className="text-slate-200">{questionNumber}</p>
-                    <p className="text-slate-500 font-bold">{numberOfQuestions}</p>
+            <div className="border-qm-500 flex flex-row items-center gap-8 border rounded-xl p-4 text-xl font-bold">
+                <div className="divide-y divide-qm-300 text-2xl font-black">
+                    <p className="text-qm-500">{questionNumber}</p>
+                    <p className="text-qm-700 font-bold">{numberOfQuestions}</p>
                 </div>
-                <h1 className="text-slate-400">{question.prompt}</h1>
+                <h1 className="text-qm-700">{question.prompt}</h1>
             </div>
             <div className="grid grid-cols-2 gap-4">
                 {[...Array(columns.left.length)].map((_, index) => (
                     <>
                         {[columns.left[index], columns.right[index]].map((item, idx) => (
-                            <button onClick={() => selectItem(idx ? "right" : "left", index)} className={`border-slate-700 flex flex-row items-center border rounded-xl text-lg font-bold overflow-hidden ${item.selected && "bg-purple-500/10"} ${item.paired && "bg-blue-600/10"}`}>
-                                    <div className={`bg-slate-700 h-full py-4 px-2 font-medium flex items-center ${item.selected && "bg-purple-500"} ${item.paired && "bg-blue-600"}`}>{item.id}</div>
-                                    <h1 className="text-slate-400 p-4 text-left">{item.item}</h1>
+                            <button onClick={() => selectItem(idx ? "right" : "left", index)} className={`border-qm-700 flex flex-row items-center border rounded-xl text-lg font-bold overflow-hidden ${item.selected && "bg-pink-500"} ${item.paired && "bg-qm-500"}`}>
+                                    <div className={`bg-qm-700 h-full py-4 px-2 font-medium text-qm-100 flex items-center ${item.selected && "bg-purple-500"}`}>{item.id} </div>
+                                    <h1 className={`${(item.paired || item.selected) && "text-qm-100"} text-qm-700 p-4 text-left bg-inherit`}>{item.item}</h1>
                             </button>  
                         ))}
                     </>
