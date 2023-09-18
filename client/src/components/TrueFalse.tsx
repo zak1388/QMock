@@ -1,5 +1,6 @@
 import { TrueFalseQuestion } from "../../../shared/validators/questions/TrueFalseValidator";
 import { useState, useRef } from "react";
+import QuestionHeader from "./QuestionHeader";
 
 export default function TrueFalse({ question, questionNumber, numberOfQuestions, onSubmit }: {
     question: TrueFalseQuestion,
@@ -22,13 +23,7 @@ export default function TrueFalse({ question, questionNumber, numberOfQuestions,
     return (
         <div className="flex flex-col items-center gap-4"> 
             <div className="w-fit flex flex-col gap-4">
-                <div className="border-qm-700 flex flex-row items-center gap-8 border rounded-xl p-4 text-xl font-bold">
-                    <div className="divide-y divide-qm-500 text-2xl font-black">
-                        <p className="text-qm-200">{questionNumber}</p>
-                        <p className="text-qm-700 font-bold">{numberOfQuestions}</p>
-                    </div>
-                    <h1 className="text-qm-700">{isTrueStatement.current ? question.trueStatement : question.falseStatement}</h1>
-                </div>
+            <QuestionHeader questionNumber={questionNumber} numberOfQuestions={numberOfQuestions} questionPrompt={isTrueStatement.current ? question.trueStatement : question.falseStatement} />
                 <div className="grid grid-cols-2 gap-4">
                     {["True", "False"].map((answer, i) => (
                         <button key={i} onClick={() => setSelectedIndex(i)} className={`rounded-xl p-4  font-medium text-lg border border-qm-500 ${selectedIdx !== i && "bg-qm-200 text-qm-700"} ${selectedIdx === i && "bg-qm-700 border-qm-700 text-qm-200"}`}>{answer}</button>

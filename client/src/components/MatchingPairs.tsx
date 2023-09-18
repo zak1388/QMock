@@ -1,5 +1,6 @@
 import { MatchingPairsQuestion } from "../../../shared/validators/questions/MatchingPairsValidator";
 import { useState } from "react";
+import QuestionHeader from "./QuestionHeader";
 
 export default function MatchingPairs({ question, questionNumber, numberOfQuestions, onSubmit }: {
     question: MatchingPairsQuestion,
@@ -73,13 +74,8 @@ export default function MatchingPairs({ question, questionNumber, numberOfQuesti
 
     return (
         <div className="w-fit flex flex-col gap-4">
-            <div className="border-qm-500 flex flex-row items-center gap-8 border rounded-xl p-4 text-xl font-bold">
-                <div className="divide-y divide-qm-300 text-2xl font-black">
-                    <p className="text-qm-500">{questionNumber}</p>
-                    <p className="text-qm-700 font-bold">{numberOfQuestions}</p>
-                </div>
-                <h1 className="text-qm-700">{question.prompt}</h1>
-            </div>
+            <QuestionHeader questionNumber={questionNumber} numberOfQuestions={numberOfQuestions} questionPrompt={question.prompt} />
+
             <div className="grid grid-cols-2 gap-4">
                 {[...Array(columns.left.length)].map((_, index) => (
                     <>
